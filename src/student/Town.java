@@ -53,5 +53,4 @@ public class Town implements Comparable<Town> {
 	public void setParent(Town town) {
 		this.parentTown = town;
 	}
-
 }

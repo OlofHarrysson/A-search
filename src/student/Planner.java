@@ -43,7 +43,7 @@ public class Planner implements PlannerInterface {
     		if (currTown.isDestination()) {
     			
     			
-    			System.out.println(currTown.getGCost());
+//    			System.out.println(currTown.getGCost());
 //    			System.exit(1);
     			
     			return generatePath(graph, currTown);
@@ -74,11 +74,12 @@ public class Planner implements PlannerInterface {
 	private List<GraphEdge> generatePath(RoadGraph graph, Town currTown) {
 		List<GraphEdge> path = new ArrayList<GraphEdge>();
 		while (currTown.getParent() != null) {
-			GraphEdge edge = graph.getEdge(currTown.getId(), currTown.getParent().getId());
+			GraphEdge edge = graph.getEdge(currTown.getParent().getId(), currTown.getId());
+
 			path.add(edge);
-			System.out.println(currTown.getParent().getId());
 			currTown = currTown.getParent();
 		}
+		Collections.reverse(path); // One directional graph
 		
 		
 		
