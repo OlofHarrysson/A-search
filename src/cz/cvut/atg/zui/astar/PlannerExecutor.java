@@ -76,6 +76,7 @@ public class PlannerExecutor {
             double planTime = 0;
 
             for(GraphEdge edge: plan){
+            	System.out.println(edge);
                 planLength+=edge.getLengthInMetres()/1000;
                 planTime +=edge.getLengthInMetres()/1000.0/edge.getAllowedMaxSpeedInKmph();
             }

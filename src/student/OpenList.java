@@ -40,7 +40,7 @@ public class OpenList extends AbstractOpenList<Town>  {
 		}
 	}
 
-	public boolean alreadyVisited(long nodeId) {
+	public boolean alreadyExpanded(long nodeId) {
 		return visitedNodes.contains(nodeId);
 	}
 

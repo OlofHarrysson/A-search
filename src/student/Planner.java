@@ -7,6 +7,9 @@ import eu.superhub.wp5.planner.planningstructure.GraphEdge;
 import eu.superhub.wp5.planner.planningstructure.GraphNode;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class Planner implements PlannerInterface {
@@ -20,8 +23,12 @@ public class Planner implements PlannerInterface {
     @Override
     public List<GraphEdge> plan(RoadGraph graph, GraphNode origin, GraphNode destination) {
     	
+//    	ArrayList<GraphEdge> allEdges = (ArrayList<GraphEdge>) graph.getAllEdges();
+    	Collection<GraphEdge> allEdges = graph.getAllEdges();
+    	double maxSpeed = getMaxSpeed(allEdges);
     	double gCost = 0;
-    	Town originTown = new Town(origin, destination, gCost);
+    	Town parentTown = null;
+    	Town originTown = new Town(origin, destination, gCost, parentTown, maxSpeed);
     	openList.add(originTown);
     	
     	int maxStop = 0;
@@ -34,10 +41,18 @@ public class Planner implements PlannerInterface {
 //    		System.out.println(currTown.getFCost());
     		
     		if (currTown.isDestination()) {
-    			System.out.println("Current town is destination town");
-    			System.exit(0); // TODO: Change
+    			
+    			
+    			System.out.println(currTown.getGCost());
+//    			System.exit(1);
+    			
+    			return generatePath(graph, currTown);
+    			
+    			
+    			
+    			
     		} else {
-    			addNeighboursToOpenList(graph, currTown, destination, openList);
+    			addNeighboursToOpenList(graph, currTown, destination, openList, maxSpeed);
     		}
     	}
     	
@@ -48,8 +63,31 @@ public class Planner implements PlannerInterface {
         throw new NotImplementedException();
     }
 
+	private double getMaxSpeed(Collection<GraphEdge> allEdges) {
+		double maxSpeed = 0;
+		for (GraphEdge edge: allEdges) {
+			if (edge.getAllowedMaxSpeedInKmph() > maxSpeed) maxSpeed = edge.getAllowedMaxSpeedInKmph();
+		}
+		return maxSpeed;
+	}
+
+	private List<GraphEdge> generatePath(RoadGraph graph, Town currTown) {
+		List<GraphEdge> path = new ArrayList<GraphEdge>();
+		while (currTown.getParent() != null) {
+			GraphEdge edge = graph.getEdge(currTown.getId(), currTown.getParent().getId());
+			path.add(edge);
+			System.out.println(currTown.getParent().getId());
+			currTown = currTown.getParent();
+		}
+		
+		
+		
+		
+		return path;
+	}
+
 	private void addNeighboursToOpenList(RoadGraph graph, Town currTown, GraphNode destination,
-			OpenList openList) {
+			OpenList openList, double maxSpeed) {
 		long townId = currTown.getId();
 		List<GraphEdge> currTownEdges = graph.getNodeOutcomingEdges(townId);
 		
@@ -58,12 +96,12 @@ public class Planner implements PlannerInterface {
 				double gCost = calcGCost(edge, currTown);
 				long nodeId = edge.getToNodeId();
 				GraphNode node = graph.getNodeByNodeId(nodeId);
-				
-				if (openList.alreadyVisited(nodeId)) { // TODO: Already expanded. Correctly implemented? In openList poll instead? Should this method check here?
+
+				if (openList.alreadyExpanded(nodeId)) {
 					continue;
 				}
 				
-				Town town = new Town(node, destination, gCost);
+				Town town = new Town(node, destination, gCost, currTown, maxSpeed);
 				
 				Town existingTown = openList.getExistingTown(nodeId); // Checks if the town already exists in the openList
 				if (existingTown == null) {

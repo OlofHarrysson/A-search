@@ -10,13 +10,15 @@ public class Town implements Comparable<Town> {
 	private double fCost;
 	private GraphNode location;
 	private GraphNode destination;
+	private Town parentTown;
 	
-	public Town(GraphNode location, GraphNode destination, double gCost) {
+	public Town(GraphNode location, GraphNode destination, double gCost, Town parentTown, double maxSpeed) {
 		this.location = location;
 		this.destination = destination;
-		this.hCost = Utils.distanceInKM(location, destination);
+		this.hCost = Utils.distanceInKM(location, destination) / maxSpeed; // Maxspeed of any road is used so hCost is never overestimated
 		this.gCost = gCost; // TODO: change
 		this.fCost = gCost + hCost;
+		this.parentTown = parentTown;
 	}
 
 	public boolean isDestination() {
@@ -44,8 +46,12 @@ public class Town implements Comparable<Town> {
 		System.out.println(fCost);
 	}
 
-	
+	public Town getParent() {
+		return this.parentTown;
+	}
 
-
+	public void setParent(Town town) {
+		this.parentTown = town;
+	}
 
 }
