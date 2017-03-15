@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Planner implements PlannerInterface {
 	
-	private OpenList openList;
+	private OpenList openList; 
 	
 	public Planner() {
 		this.openList = new OpenList();
