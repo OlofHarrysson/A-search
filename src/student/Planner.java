@@ -5,8 +5,6 @@ import cz.cvut.atg.zui.astar.PlannerInterface;
 import cz.cvut.atg.zui.astar.RoadGraph;
 import eu.superhub.wp5.planner.planningstructure.GraphEdge;
 import eu.superhub.wp5.planner.planningstructure.GraphNode;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +21,6 @@ public class Planner implements PlannerInterface {
     @Override
     public List<GraphEdge> plan(RoadGraph graph, GraphNode origin, GraphNode destination) {
     	
-//    	ArrayList<GraphEdge> allEdges = (ArrayList<GraphEdge>) graph.getAllEdges();
     	Collection<GraphEdge> allEdges = graph.getAllEdges();
     	double maxSpeed = getMaxSpeed(allEdges);
     	double gCost = 0;
@@ -31,36 +28,23 @@ public class Planner implements PlannerInterface {
     	Town originTown = new Town(origin, destination, gCost, parentTown, maxSpeed);
     	openList.add(originTown);
     	
+    	List<GraphEdge> path = null;
     	int maxStop = 0;
-    	while ((! openList.isEmpty()) && maxStop < 9000000) {
+    	while ((! openList.isEmpty()) && maxStop < 900000) {
     		maxStop += 1;
-//    		System.out.println(maxStop);
-//    		openList.printFCosts();
     		Town currTown = openList.getSmallest();
     		openList.addExpandedTown(currTown);
-//    		System.out.println(currTown.getFCost());
     		
     		if (currTown.isDestination()) {
-    			
-    			
-//    			System.out.println(currTown.getGCost());
-//    			System.exit(1);
-    			
-    			return generatePath(graph, currTown);
-    			
-    			
-    			
+    			path = generatePath(graph, currTown);
+    			break;
     			
     		} else {
     			addNeighboursToOpenList(graph, currTown, destination, openList, maxSpeed);
     		}
     	}
     	
-    	System.out.println("Finished");
-    	
-    	
-    	
-        throw new NotImplementedException();
+    	return path;
     }
 
 	private double getMaxSpeed(Collection<GraphEdge> allEdges) {
@@ -80,10 +64,6 @@ public class Planner implements PlannerInterface {
 			currTown = currTown.getParent();
 		}
 		Collections.reverse(path); // One directional graph
-		
-		
-		
-		
 		return path;
 	}
 

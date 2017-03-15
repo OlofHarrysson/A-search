@@ -16,7 +16,7 @@ public class Town implements Comparable<Town> {
 		this.location = location;
 		this.destination = destination;
 		this.hCost = Utils.distanceInKM(location, destination) / maxSpeed; // Maxspeed of any road is used so hCost is never overestimated
-		this.gCost = gCost; // TODO: change
+		this.gCost = gCost;
 		this.fCost = gCost + hCost;
 		this.parentTown = parentTown;
 	}
@@ -40,10 +40,6 @@ public class Town implements Comparable<Town> {
 	@Override
 	public int compareTo(Town o) {
 		return Double.compare(this.getFCost(), o.getFCost());
-	}
-	
-	public void printFCost() {
-		System.out.println(fCost);
 	}
 
 	public Town getParent() {

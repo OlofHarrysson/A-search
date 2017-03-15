@@ -1,19 +1,18 @@
 package student;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 import cz.cvut.atg.zui.astar.AbstractOpenList;
 
 public class OpenList extends AbstractOpenList<Town>  {
 	
-	TreeMap<Long,Town> nodes;
+	HashMap<Long, Town> nodes;
 	HashSet<Long> visitedNodes;
 	
 	public OpenList(){
 		super();
-		nodes = new TreeMap<Long,Town>();
+		nodes = new HashMap<Long,Town>();
 		visitedNodes = new HashSet<Long>();
 	}
 
@@ -28,16 +27,17 @@ public class OpenList extends AbstractOpenList<Town>  {
 	}
 
 	public Town getSmallest() {
-		Entry<Long, Town> smallest = nodes.pollFirstEntry();
-		return smallest.getValue();
-	}
-	
-	public void printFCosts() {
-		System.out.println("The fcosts in open list are");
+		double smallestCost = Double.MAX_VALUE;
+		long smallestId = -1;
+		
 		for (Map.Entry<Long,Town> entry: nodes.entrySet()) {
-			Town town = entry.getValue();
-			town.printFCost();
+			if (entry.getValue().getFCost() < smallestCost) {
+				smallestCost = entry.getValue().getFCost();
+				smallestId = entry.getKey();
+			}
 		}
+		
+		return nodes.remove(smallestId);
 	}
 
 	public boolean alreadyExpanded(long nodeId) {
@@ -55,6 +55,5 @@ public class OpenList extends AbstractOpenList<Town>  {
 	public void addExpandedTown(Town currTown) {
 		visitedNodes.add(currTown.getId());
 	}
-
 	
 }

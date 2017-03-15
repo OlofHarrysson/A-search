@@ -42,13 +42,12 @@ public class PlannerExecutor {
         System.out.println("Graph loaded.");
 
         //picks origin and destination nodes (feel free to modify)
-        GraphNode origin = newroadGraph.getNodeByNodeId(13823646);
-        GraphNode destination = newroadGraph.getNodeByNodeId(188755778);
+        GraphNode origin = newroadGraph.getNodeByNodeId(243081231);
+        GraphNode destination = newroadGraph.getNodeByNodeId(21728749);
 
         System.out.println("Planning between: "+ origin.getId() + " and "+ destination.getId());
 
         //Here will be reference to your planner
-//        PlannerInterface astar = getDummyPlanner();
         PlannerInterface astar = new Planner();
 
         long time = System.currentTimeMillis();
@@ -164,28 +163,5 @@ public class PlannerExecutor {
         //This shouldn't happen! Luckily, one does not simply reach this line.
         System.exit(1);
         return null;
-    }
-
-    /**
-     * Gets a dummy planner doing nothing. We hope you will be better than this ;)
-     * @return Ghost in the shell.
-     */
-    public PlannerInterface getDummyPlanner() {
-        return new PlannerInterface() {
-            @Override
-            public List<GraphEdge> plan(RoadGraph graph, GraphNode origin, GraphNode destination) {
-                return new ArrayList<>();
-            }
-
-            @Override
-            public AbstractOpenList getOpenList() {
-                return new AbstractOpenList() {
-                    @Override
-                    protected boolean addItem(Object item) {
-                        return false;
-                    }
-                };
-            }
-        };
     }
 }
